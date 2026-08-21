@@ -1,43 +1,62 @@
-# Java Exception Handling Basics
+# Java Exception Handling
 
-A simple Java console application that demonstrates basic exception handling using a `try-catch` block. The program continuously accesses command-line arguments until an exception occurs, allowing the application to demonstrate how runtime exceptions can be captured and handled.
+A Java console application that demonstrates basic exception handling through the use of `try`, `catch`, and `finally`.
 
-## Overview
+The program processes command-line arguments when they are provided and detects the absence of arguments as an exceptional condition. Regardless of the execution result, the application reports whether the program terminated normally or abnormally.
 
-The application attempts to access the elements contained in the `args` array using an infinite loop.
+## Features
 
-When the program attempts to access an array position that does not exist, an exception is thrown. The exception is captured by the `catch` block, which displays a termination message and ends the program.
-
-This exercise demonstrates the basic structure of exception handling in Java.
+- Processes command-line arguments dynamically.
+- Validates whether arguments were provided before accessing the array.
+- Uses `IllegalArgumentException` to represent an invalid execution state.
+- Handles exceptions using a `try-catch-finally` structure.
+- Reports normal or abnormal program termination.
+- Prevents invalid array access when no arguments are provided.
 
 ## Concepts Demonstrated
 
-- Java exception handling
-- `try-catch` blocks
-- Runtime exceptions
+This project demonstrates the following Java concepts:
+
 - Command-line arguments
-- Array access
-- Infinite loops
-- Program termination with `System.exit()`
-- Basic console input and output
+- Arrays
+- Array length validation
+- `try`
+- `catch`
+- `finally`
+- `Exception`
+- `IllegalArgumentException`
+- Boolean control variables
+- Exception handling flow
 
 ## Project Structure
 
 ```text
-java-exception-handling-basics/
-│
-├── assets/
-│   └── images/
-│       ├── execution_with_arguments.jpg
-│       └── execution_without_arguments.jpg
+Java-Exception-Handling/
 │
 ├── src/
 │   └── ejercicio1/
 │       └── TestExceptions.java
 │
-├── README.md
-└── LICENSE
+├── assets/
+│   └── images/
+│       ├── normal_execution.jpg
+│       └── abnormal_execution.jpg
+│
+└── README.md
 ```
+
+## Program Logic
+
+The application uses the following execution flow:
+
+1. A boolean variable named `huboError` is initialized with `false`.
+2. The program enters a `try` block.
+3. The application verifies whether command-line arguments were provided.
+4. If no arguments are present, an `IllegalArgumentException` is thrown.
+5. If arguments are available, each element is displayed.
+6. If an exception occurs, the `catch` block changes `huboError` to `true`.
+7. The `finally` block is always executed.
+8. The application reports either normal or abnormal termination.
 
 ## Source Code
 
@@ -49,138 +68,150 @@ package ejercicio1;
 public class TestExceptions {
 
     public static void main(String[] args) {
+        boolean huboError = false;
+
         try {
-            for (int i = 0; true; i++) {
-                System.out.println(
-                    "args[" + i + "] is '" + args[i] + "'"
-                );
+            // Evaluamos si el arreglo está vacío antes de recorrer
+            if (args.length == 0) {
+                throw new IllegalArgumentException("No se pasaron argumentos.");
+            }
+
+            // Bucle controlado por el tamaño del arreglo
+            for (int i = 0; i < args.length; i++) {
+                System.out.println("args[" + i + "] is '" + args[i] + "'");
             }
         } catch (Exception e) {
-            System.out.println("Termino anormal");
-            System.exit(0);
+            huboError = true;
+        } finally {
+            if (huboError) {
+                System.out.println("Termino anormal");
+            } else {
+                System.out.println("Termino normal");
+            }
         }
     }
 }
 ```
 
-## How It Works
+## Execution Cases
 
-The application starts an infinite `for` loop:
+### Normal Execution
 
-```java
-for (int i = 0; true; i++)
+When one or more command-line arguments are provided, the program displays each argument and finishes normally.
+
+Example:
+
+```text
+args[0] is 'Java'
+args[1] is 'Exceptions'
+Termino normal
 ```
 
-During every iteration, the program attempts to access an element of the `args` array:
+The following screenshot shows the application running successfully with command-line arguments:
 
-```java
-args[i]
-```
+![Normal Execution](assets/images/normal_execution.jpg)
 
-As long as the current index exists, the corresponding command-line argument is printed.
+### Abnormal Execution
 
-Eventually, the index exceeds the number of available arguments and Java throws an exception. This exception is captured by the following block:
+When the application is executed without command-line arguments, the program throws an `IllegalArgumentException`.
 
-```java
-catch (Exception e)
-```
+The exception is caught by the `catch` block, the `huboError` variable is updated, and the `finally` block reports abnormal termination.
 
-The program then displays the message:
+Expected output:
 
 ```text
 Termino anormal
 ```
 
-Finally, the application terminates using:
+The following screenshot shows the application running without command-line arguments:
 
-```java
-System.exit(0);
-```
+![Abnormal Execution](assets/images/abnormal_execution.jpg)
 
-## Execution
-
-The program can be executed from an IDE such as NetBeans or from the command line.
-
-### Example with command-line arguments
-
-For example, if the application receives the following arguments:
+## Exception Handling Flow
 
 ```text
-Hello Java
+                Program Starts
+                       │
+                       ▼
+              Enter try block
+                       │
+                       ▼
+          Are arguments available?
+                 │           │
+                Yes          No
+                 │           │
+                 ▼           ▼
+        Display arguments   Throw exception
+                 │           │
+                 │           ▼
+                 │       Enter catch
+                 │           │
+                 ▼           ▼
+              finally is always executed
+                       │
+                       ▼
+            Normal or abnormal termination
+                       │
+                       ▼
+                  Program Ends
 ```
-
-The output will be similar to:
-
-```text
-args[0] is 'Hello'
-args[1] is 'Java'
-Termino anormal
-```
-
-After processing the available arguments, the program attempts to access a position outside the array and the exception is handled.
-
-### Example without command-line arguments
-
-If the application is executed without arguments, the program immediately attempts to access:
-
-```java
-args[0]
-```
-
-Since the array does not contain any elements, an exception occurs and the output is:
-
-```text
-Termino anormal
-```
-
-## Screenshots
-
-### Execution with Command-Line Arguments
-
-![Execution with Arguments](assets/images/execution_with_arguments.jpg)
-
-The application prints the available command-line arguments before attempting to access an invalid array position.
-
-### Execution without Command-Line Arguments
-
-![Execution without Arguments](assets/images/execution_without_arguments.jpg)
-
-The application immediately handles the exception because no command-line arguments are available.
-
-## Expected Behavior
-
-The application behaves as follows:
-
-1. Starts an infinite loop.
-2. Attempts to access command-line arguments sequentially.
-3. Prints each available argument.
-4. Reaches an invalid array position.
-5. Throws an exception.
-6. Captures the exception using a `catch` block.
-7. Displays a termination message.
-8. Ends the program.
 
 ## Requirements
 
 - Java Development Kit (JDK) 8 or later
-- NetBeans, IntelliJ IDEA, Eclipse, or another Java-compatible IDE
+- Java IDE such as NetBeans, IntelliJ IDEA, or Eclipse
 
-## Learning Objectives
+## How to Run
 
-This project was created to practice and demonstrate:
+### From an IDE
 
-- Handling exceptions in Java
-- Using `try-catch` blocks
-- Working with command-line arguments
-- Understanding runtime errors caused by invalid array access
-- Controlling application termination
-- Writing basic console applications
+1. Open the project in your preferred Java IDE.
+2. Locate the `TestExceptions` class.
+3. Configure command-line arguments if you want to test the normal execution path.
+4. Run the application.
+
+To test abnormal execution, run the application without command-line arguments.
+
+### From the Command Line
+
+Compile the program:
+
+```bash
+javac ejercicio1/TestExceptions.java
+```
+
+Run without arguments:
+
+```bash
+java ejercicio1.TestExceptions
+```
+
+Run with arguments:
+
+```bash
+java ejercicio1.TestExceptions Java Exceptions
+```
+
+## Expected Behavior
+
+| Execution | Result |
+|---|---|
+| Arguments are provided | Each argument is displayed and the program reports normal termination |
+| No arguments are provided | An exception is handled and the program reports abnormal termination |
 
 ## Notes
 
-The program catches the generic `Exception` class in order to demonstrate the basic mechanics of exception handling.
+The `finally` block is executed regardless of whether an exception occurs. In this implementation, it is responsible for reporting the final execution state of the application.
 
-For more specific exception management, the program could catch the particular exception generated when an invalid array index is accessed.
+The boolean variable `huboError` allows the program to preserve the result of the exception-handling process and determine which final message should be displayed.
+
+The program intentionally validates the length of the `args` array before processing it, preventing an invalid execution flow when no command-line arguments are available.
+
+## Repository Purpose
+
+This repository was created as a Java programming exercise focused on understanding the basic flow of exception handling and the use of command-line arguments.
+
+The project provides a simple example of how `try`, `catch`, and `finally` can work together to control program execution and report its final state.
 
 ## Author
 
